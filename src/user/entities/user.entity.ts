@@ -6,17 +6,17 @@ export class User {
   id: string | number; // 标记为主列，值自动生成
 
   @Column({ type: 'varchar', length: 255, name: 'userName', comment: '用户名' })
-  userName: string | number;
+  userName: string;
 
   @Column({ type: 'varchar', length: 255, name: 'realName', comment: '姓名' })
   realName: string;
 
-  // select可搭配addSelect('属性名')使用
+  // select可搭配addSelect('password')使用
   @Column({ type: 'varchar', length: 255, name: 'password', select: false, comment: '密码' })
   password: string;
 
   @Column({ type: 'varchar', length: 255, name: 'phone', comment: '手机号' })
-  phone: string | number;
+  phone: string;
 
   @Column({ type: 'int', name: "age", comment: '年龄' })
   age: number;
