@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -24,31 +24,24 @@ export class CreateUserDto {
   readonly phone: string;
 
   @ApiPropertyOptional({ description: '年龄' })
-  @IsEmpty({ message: '年龄可能为空' })
   // @IsNumber({}, { message: '年龄必须是 number 类型' })
-  readonly age: number;
+  readonly age?: number;
 
   @ApiPropertyOptional({ description: '性别' })
-  @IsEmpty({ message: '性别可能为空' })
-  readonly sex: string;
+  readonly sex?: string;
 
   @ApiPropertyOptional({ description: '角色' })
-  @IsEmpty({ message: '角色可能为空' })
   readonly role?: string;
 
   @ApiPropertyOptional({ description: '省份' })
-  @IsEmpty({ message: '省份可能为空' })
-  readonly province: string;
+  readonly province?: string;
 
   @ApiPropertyOptional({ description: '城市' })
-  @IsEmpty({ message: '城市可能为空' })
-  readonly city: string;
+  readonly city?: string;
 
   @ApiPropertyOptional({ description: '创建时间' })
-  @IsEmpty({ message: '创建时间可能为空' })
-  readonly createTime: Date;
+  readonly createTime?: Date;
 
   @ApiPropertyOptional({ description: '更新时间' })
-  @IsEmpty({ message: '更新时间可能为空' })
-  readonly updateTime: Date;
+  readonly updateTime?: Date;
 }
