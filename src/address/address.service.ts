@@ -1,30 +1,31 @@
 import { Injectable, HttpException, Logger } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { Address } from '../entity/address.entity';
 
 export interface UserRo {
-  list: User[];
+  list: Address[];
   count: number;
 }
 
 @Injectable()
-export class UserService {
-
+export class AddressService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(Address)
+    private readonly userRepository: Repository<Address>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const { userName } = createUserDto;
-    const existUser = await this.userRepository.findOne({ where: { userName } });
+  async create(createAddressDto: CreateAddressDto): Promise<Address> {
+    const { real_name } = createAddressDto;
+    const existUser = await this.userRepository.findOne({
+      where: { real_name },
+    });
     if (existUser) {
       throw new HttpException('用户名已存在', 401);
     }
-    return await this.userRepository.save(createUserDto);
+    return await this.userRepository.save(createAddressDto);
   }
 
   async findAll(query): Promise<UserRo> {
@@ -39,11 +40,11 @@ export class UserService {
     return { list, count };
   }
 
-  async findOne(id: number): Promise<User> {
-    return await this.userRepository.findOne({ where: { id } })
+  async findOne(id: string): Promise<Address> {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateAddressDto) {
     const existUser = await this.userRepository.findOne({ where: { id } });
     if (!existUser) {
       throw new HttpException(`id为${id}的数据不存在`, 401);
@@ -52,7 +53,7 @@ export class UserService {
     return this.userRepository.save(updateUser);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const existUser = await this.userRepository.findOne({ where: { id } });
     if (!existUser) {
       throw new HttpException(`id为${id}的数据不存在`, 401);
@@ -60,7 +61,7 @@ export class UserService {
     return await this.userRepository.remove(existUser);
   }
 
-  async batchDelete(ids: number[]) {
+  async batchDelete(ids: string[]) {
     return await this.userRepository.delete(ids);
   }
 }

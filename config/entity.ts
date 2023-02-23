@@ -1,5 +1,4 @@
-import { User } from '../src/user/entities/user.entity';
+import { User } from '../src/entity/user.entity';
+import { Address } from '../src/entity/address.entity';
 
-export {
-  User
-}
+export { User, Address };

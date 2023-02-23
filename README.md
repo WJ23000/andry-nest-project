@@ -65,10 +65,7 @@ $ yarn run test:cov
 $ nest g [文件类型] [文件名] [文件目录]
 
 # nest命令无法执行处理方法
-$ 1.以管理员身份运行PowerShell
-$ 2.执行：get-ExecutionPolicy，回复Restricted，表示状态是禁止的
-$ 3.执行：set-ExecutionPolicy RemoteSigned
-$ 4.选择Y
+$ cmd运行：npm i -g @nestjs/cli
 
 # 创建module
 $ nest g mo demo
