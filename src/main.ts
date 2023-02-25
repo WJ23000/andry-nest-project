@@ -1,5 +1,4 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from '../src/core/filter/http-exception/http-exception.filter';
@@ -14,8 +13,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   // 注册全局错误的拦截器
   app.useGlobalInterceptors(new TransformInterceptor());
-  // 类序列化拦截器（对save方法无作用）
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   // 注册swagger
   swaggerUi(app);
   await app.listen(3000);

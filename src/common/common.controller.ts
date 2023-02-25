@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CommonService } from './common.service';
-import { RegisterDto, LoginDto } from './dto/create-common.dto';
+import { RegisterDto, LoginDto } from './dto/common.dto';
 import { ValidationPipe } from '../pipe/validation/validation.pipe';
 
-@UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，返回不包含password字段
 @ApiTags('公共')
+@UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
 @Controller('common')
 export class CommonController {
   constructor(private readonly commonService: CommonService) {}
@@ -32,7 +32,6 @@ export class CommonController {
     return this.commonService.login(loginDto);
   }
 
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @ApiOperation({ summary: '退出登录' })
   @Post('exitLogin')
   exitLogin() {

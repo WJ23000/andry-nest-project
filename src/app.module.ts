@@ -4,9 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import database from '../config/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DemoModule } from './demo/demo.module';
 import { CommonModule } from './common/common.module';
-import { AddressModule } from './address/address.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -19,9 +18,8 @@ import { AddressModule } from './address/address.module';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => config.get('database'),
     }),
-    DemoModule,
     CommonModule,
-    AddressModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  BeforeInsert,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
+import * as bcryptjs from 'bcryptjs';
 
 @Entity({
   name: 'User',
@@ -25,7 +32,7 @@ export class User extends BaseEntity {
   })
   real_name: string;
 
-  @Exclude({ toPlainOnly: true })
+  @Exclude() // 排除password
   @Column({
     type: 'varchar',
     length: 255,
@@ -120,4 +127,10 @@ export class User extends BaseEntity {
     comment: '更新时间',
   })
   update_time: Date;
+
+  // 提前对密码进行加密
+  @BeforeInsert()
+  async bcryptPwd() {
+    this.password = await bcryptjs.hashSync(this.password);
+  }
 }
