@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../entity/user.entity';
+import { AuthService } from '../auth/auth.service'; // 引入封装的jwt服务
 
 @Injectable()
 export class CommonService {
   constructor(
+    private readonly authService: AuthService,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>, // private readonly authService: AuthService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -39,10 +41,15 @@ export class CommonService {
     if (!user) {
       throw new HttpException('用户名错误！', 401);
     }
+    // 校验密码是否一致
     if (!bcryptjs.compareSync(password, user.password)) {
       throw new HttpException('密码错误！', 401);
     }
-    return user;
+    const token = await this.authService.generateToken(user_name);
+    return {
+      user,
+      token: token,
+    };
   }
 
   async exitLogin() {
