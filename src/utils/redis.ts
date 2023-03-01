@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { redisConfig, redisClusterConfig } from '../../config/redis';
+import { redisConfig, redisClusterConfig } from '../config/redis';
 
 export class RedisInstance {
   static async initRedis(connectType?: string) {

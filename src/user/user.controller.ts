@@ -10,11 +10,13 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserDto, PaginationDto } from './dto/user.dto';
 import { ValidationPipe } from '../pipe/validation/validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('用户管理')
 @UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
@@ -22,8 +24,10 @@ import { ValidationPipe } from '../pipe/validation/validation.pipe';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @ApiOperation({ summary: '分页查询用户列表' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt')) // 使用jwt进行验证
+  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @Get('list')
   async queryUserList(@Query() query: PaginationDto) {
     return await this.userService.queryUserList(query);
@@ -35,8 +39,8 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @ApiOperation({ summary: '更新用户信息' })
+  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @Patch(':id')
   update(@Param('id') id: string, @Body() userDto: UserDto) {
     return this.userService.update(id, userDto);

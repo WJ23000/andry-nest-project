@@ -18,15 +18,15 @@ import { ValidationPipe } from '../pipe/validation/validation.pipe';
 export class CommonController {
   constructor(private readonly commonService: CommonService) {}
 
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @ApiOperation({ summary: '注册' })
+  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
     return this.commonService.register(registerDto);
   }
 
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @ApiOperation({ summary: '登录' })
+  @UsePipes(new ValidationPipe()) // 使用管道验证参数
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.commonService.login(loginDto);

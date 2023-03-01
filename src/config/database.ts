@@ -2,8 +2,8 @@ import { registerAs } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { User, Address } from './entity';
 
-Logger.log('当前环境', User);
-Logger.log('当前环境', process.env.NODE_ENV); // process.env打包后才会执行
+const platform = process.env.NODE_ENV;
+Logger.log('当前环境', platform); // process.env打包后才会执行
 export default registerAs('database', () => ({
   type: process.env.DB_TYPE, // 数据库类型
   host: process.env.DB_HOST, // 主机
