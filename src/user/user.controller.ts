@@ -17,6 +17,7 @@ import { UserService } from './user.service';
 import { UserDto, PaginationDto } from './dto/user.dto';
 import { ValidationPipe } from '../pipe/validation/validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
+// import { RbacInterceptor } from '../core/interceptor/rbac/rbac.interceptor';
 
 @ApiTags('用户管理')
 @UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
@@ -26,8 +27,9 @@ export class UserController {
 
   @ApiOperation({ summary: '分页查询用户列表' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt')) // 使用jwt进行验证
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
+  @UseGuards(AuthGuard('jwt')) // 调用jwt进行验证
+  // @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器
+  @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Get('list')
   async queryUserList(@Query() query: PaginationDto) {
     return await this.userService.queryUserList(query);
@@ -40,7 +42,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '更新用户信息' })
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
+  @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Patch(':id')
   update(@Param('id') id: string, @Body() userDto: UserDto) {
     return this.userService.update(id, userDto);

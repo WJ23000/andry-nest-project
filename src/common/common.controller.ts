@@ -19,14 +19,14 @@ export class CommonController {
   constructor(private readonly commonService: CommonService) {}
 
   @ApiOperation({ summary: '注册' })
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
+  @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
     return this.commonService.register(registerDto);
   }
 
   @ApiOperation({ summary: '登录' })
-  @UsePipes(new ValidationPipe()) // 使用管道验证参数
+  @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.commonService.login(loginDto);

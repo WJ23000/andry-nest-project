@@ -10,9 +10,9 @@ import { RedisInstance } from '../utils/redis';
 @Injectable()
 export class CommonService {
   constructor(
-    private readonly authService: AuthService,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>, // private readonly authService: AuthService,
+    private readonly userRepository: Repository<User>,
+    private readonly authService: AuthService,
   ) {}
 
   async register(registerDto: RegisterDto) {

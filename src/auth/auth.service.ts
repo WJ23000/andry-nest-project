@@ -1,5 +1,6 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { jwtSecretKey } from './config';
 
 @Injectable()
 export class AuthService {
@@ -11,11 +12,26 @@ export class AuthService {
       id: user.id,
       username: user.user_name,
       phone: user.phone,
+      role: user.role,
     };
+
     const token = await this.jwtService.sign(payload);
     if (!token) {
-      throw new HttpException(`token服务异常，请检查！`, 4000401);
+      throw new HttpException(`token生成失败，请检查！`, 4000401);
     }
     return token;
+  }
+
+  // 解密token（token格式：'Bearer xxxxxxxxxxxxxx'）
+  async verifyToken(token: string) {
+    console.log(token);
+    const data = await this.jwtService.verify(
+      token.split(' ')[1],
+      jwtSecretKey,
+    );
+    if (!data) {
+      throw new HttpException(`token解密失败，请检查！`, 4000401);
+    }
+    return data;
   }
 }
