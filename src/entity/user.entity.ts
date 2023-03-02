@@ -86,13 +86,12 @@ export class User extends BaseEntity {
   sex: string;
 
   @Column({
-    type: 'varchar',
+    type: 'int',
     nullable: true,
-    length: 255,
     name: 'role',
     comment: '角色',
   })
-  role: string;
+  role: number;
 
   @Column({
     type: 'varchar',

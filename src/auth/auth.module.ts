@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 import { jwtSecretKey } from './config';
+import { JwtAuthGuard } from '../guard/auth.guard';
 
 @Module({
   imports: [
@@ -15,7 +17,14 @@ import { jwtSecretKey } from './config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // 给全局接口增加守卫
+    },
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

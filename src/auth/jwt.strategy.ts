@@ -13,10 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // JWT验证
+  // jwt验证，被守卫调用，验证通过返回用户信息
   async validate(payload: any) {
+    console.log('是谁', payload);
     return {
+      id: payload.id,
       username: payload.username,
+      phone: payload.phone,
+      role: payload.role,
     };
   }
 }

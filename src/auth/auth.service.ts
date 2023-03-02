@@ -6,7 +6,7 @@ import { jwtSecretKey } from './config';
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
-  // jwt验证，返回token
+  // 生成token，并返回token
   async generateToken(user: any) {
     const payload = {
       id: user.id,
@@ -14,7 +14,6 @@ export class AuthService {
       phone: user.phone,
       role: user.role,
     };
-
     const token = await this.jwtService.sign(payload);
     if (!token) {
       throw new HttpException(`token生成失败，请检查！`, 4000401);
@@ -22,7 +21,7 @@ export class AuthService {
     return token;
   }
 
-  // 解密token（token格式：'Bearer xxxxxxxxxxxxxx'）
+  // 解密token，并返回用户信息（token格式：'Bearer xxxxxxxxxxxxxx'）
   async verifyToken(token: string) {
     console.log(token);
     const data = await this.jwtService.verify(

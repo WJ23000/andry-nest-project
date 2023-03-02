@@ -16,8 +16,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserDto, PaginationDto } from './dto/user.dto';
 import { ValidationPipe } from '../pipe/validation/validation.pipe';
-import { AuthGuard } from '@nestjs/passport';
-// import { RbacInterceptor } from '../core/interceptor/rbac/rbac.interceptor';
+// import { AuthGuard } from '@nestjs/passport';
+import { RbacInterceptor } from '../core/interceptor/rbac/rbac.interceptor';
 
 @ApiTags('用户管理')
 @UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
@@ -26,9 +26,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '分页查询用户列表' })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt')) // 调用jwt进行验证
-  // @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
+  // @UseGuards(AuthGuard('jwt')) // 调用jwt验证token
+  @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Get('list')
   async queryUserList(@Query() query: PaginationDto) {
@@ -36,6 +36,8 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '根据id查询用户信息' })
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
+  @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
