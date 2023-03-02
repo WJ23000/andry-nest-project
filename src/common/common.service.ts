@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../entity/user.entity';
 import { AuthService } from '../auth/auth.service'; // 引入封装的jwt服务
+import { RedisInstance } from '../utils/redis';
 
 @Injectable()
 export class CommonService {
@@ -20,11 +21,11 @@ export class CommonService {
       where: { user_name },
     });
     if (existUser) {
-      throw new HttpException('用户名已存在！', 401);
+      throw new HttpException('用户名已存在！', 4000401);
     }
     // 校验密码是否一致
     if (password !== repassword) {
-      throw new HttpException('密码和重复密码不一致，请检查！', 401);
+      throw new HttpException('密码和重复密码不一致，请检查！', 4000401);
     }
     // 解决实体类BeforeInsert、BeforeUpdate方法不触发问题，解决@Exclude()不生效问题
     const entity = await this.userRepository.create(registerDto);
@@ -39,16 +40,19 @@ export class CommonService {
       .where('user.user_name=:user_name', { user_name })
       .getOne();
     if (!user) {
-      throw new HttpException('用户名错误！', 401);
+      throw new HttpException('用户名错误！', 4000401);
     }
     // 校验密码是否一致
     if (!bcryptjs.compareSync(password, user.password)) {
-      throw new HttpException('密码错误！', 401);
+      throw new HttpException('密码错误！', 4000401);
     }
-    const token = await this.authService.generateToken(user_name);
+    const accessToken = await this.authService.generateToken(user);
+    // 将用户信息和token存入redis，并设置失效时间（秒），语法：[key, seconds, value]
+    const redis = await RedisInstance.initRedis();
+    redis.setex('auth:' + user.user_name, 300, accessToken);
     return {
       user,
-      token: token,
+      token: accessToken,
     };
   }
 

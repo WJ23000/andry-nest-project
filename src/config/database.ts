@@ -1,16 +1,19 @@
 import { registerAs } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { User, Address } from './entity';
+import { localConfig, prodConfig } from './config';
 
-const platform = process.env.NODE_ENV;
-Logger.log('当前环境', platform); // process.env打包后才会执行
+// 本地运行是没有process.env.NODE_ENV的，借此来区分本地环境和生成环境
+const config = process.env.NODE_ENV ? prodConfig : localConfig;
+const db = config.database;
+
 export default registerAs('database', () => ({
-  type: process.env.DB_TYPE, // 数据库类型
-  host: process.env.DB_HOST, // 主机
-  port: parseInt(process.env.DB_PORT, 10), // 端口号
-  username: process.env.DB_USERNAME, // 用户名
-  password: process.env.DB_PASSWORD, // 密码
-  database: process.env.DB_DATABASE, // 数据库名
+  type: db.type, // 数据库类型
+  host: db.host, // 主机
+  port: parseInt(db.port, 10), // 端口号
+  username: db.username, // 用户名
+  password: db.password, // 密码
+  database: db.database, // 数据库名
   entities: [User, Address], // 实体-数据库表
   autoLoadEntities: true, // true: 自动查找Entity实体并加载
   synchronize: false, // true：根据实体自动创建数据库表（生产环境建议关闭）

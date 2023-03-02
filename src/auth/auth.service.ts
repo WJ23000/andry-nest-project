@@ -8,11 +8,13 @@ export class AuthService {
   // jwt验证，返回token
   async generateToken(user: any) {
     const payload = {
-      username: user.username,
+      id: user.id,
+      username: user.user_name,
+      phone: user.phone,
     };
     const token = await this.jwtService.sign(payload);
     if (!token) {
-      throw new HttpException(`加密数据异常，请检查！`, 401);
+      throw new HttpException(`token服务异常，请检查！`, 4000401);
     }
     return token;
   }

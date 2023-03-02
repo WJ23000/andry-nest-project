@@ -1,35 +1,58 @@
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
-const tsConfigFile = 'tsconfig.build.json';
+const webpack = require('webpack');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
+  entry: './src/main',
   target: 'node',
-  entry: path.resolve(__dirname, 'src', 'main.ts'), // 入口文件。改成你自己的
-  output: {
-    path: path.resolve(__dirname, 'dist'), // 出口文件，如果没什么特殊的就可以不管
-    filename: 'index.js',
-  },
-  // 忽略依赖
-  externals: [nodeExternals()],
-  plugins: [new CleanWebpackPlugin()],
+  // 置为空即可忽略webpack-node-externals插件
+  externals: {},
+  // ts文件的处理
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.ts?$/,
+        use: {
+          loader: 'ts-loader',
+          options: { transpileOnly: true },
+        },
+        exclude: /node_modules/,
       },
     ],
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-    plugins: [
-      // 别名路径处理
-      new TsconfigPathsPlugin({
-        configFile: tsConfigFile,
-      }),
-    ],
+  // 打包后的文件名称以及位置
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    extensions: ['.js', '.ts', '.json'],
+  },
+  plugins: [
+    // 需要进行忽略的插件
+    new webpack.IgnorePlugin({
+      checkResource(resource) {
+        const lazyImports = [
+          '@nestjs/microservices',
+          '@nestjs/microservices/microservices-module',
+          '@nestjs/websockets/socket-module',
+          'cache-manager',
+          'class-validator',
+          'class-transformer/storage',
+        ];
+        if (!lazyImports.includes(resource)) {
+          return false;
+        }
+        try {
+          require.resolve(resource, {
+            paths: [process.cwd()],
+          });
+        } catch (err) {
+          return true;
+        }
+        return false;
+      },
+    }),
+    new ForkTsCheckerWebpackPlugin(),
+  ],
 };
