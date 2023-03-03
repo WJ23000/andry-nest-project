@@ -4,10 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import database from './config/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+// import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
-import { RedisModule } from './redis/redis.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,10 +19,9 @@ import { AuthModule } from './auth/auth.module';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => config.get('database'),
     }),
+    // AuthModule,
     CommonModule,
     UserModule,
-    RedisModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

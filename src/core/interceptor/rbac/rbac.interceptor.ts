@@ -13,9 +13,10 @@ export class RbacInterceptor implements NestInterceptor {
   constructor(private readonly role: number) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = context.getArgByIndex(1).req;
-    console.log(req.user, this.role);
-    if (req.user.role > this.role) {
+    // request：jwt.strategy.ts文件validate方法返回的用户信息
+    const request = context.getArgByIndex(1).req;
+    // 抛出禁止的异常
+    if (request.user.role > this.role) {
       throw new ForbiddenException('对不起，您无操作权限，请联系管理员！');
     }
     return next.handle();

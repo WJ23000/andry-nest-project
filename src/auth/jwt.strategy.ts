@@ -1,6 +1,6 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { jwtSecretKey } from './config';
 
 @Injectable()
@@ -15,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // jwt验证，被守卫调用，验证通过返回用户信息
   async validate(payload: any) {
-    console.log('是谁', payload);
     return {
       id: payload.id,
       username: payload.username,

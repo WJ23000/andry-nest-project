@@ -1,9 +1,9 @@
-import { Injectable, HttpException } from '@nestjs/common';
-import { RegisterDto, LoginDto } from './dto/common.dto';
+import { Injectable, HttpException, ExecutionContext } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../entity/user.entity';
+import { RegisterDto, LoginDto } from './dto/common.dto';
 import { AuthService } from '../auth/auth.service'; // 引入封装的jwt服务
 import { RedisInstance } from '../utils/redis';
 
@@ -17,10 +17,10 @@ export class CommonService {
 
   async register(registerDto: RegisterDto) {
     const { user_name, password, repassword } = registerDto;
-    const existUser = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { user_name },
     });
-    if (existUser) {
+    if (user) {
       throw new HttpException('用户名已存在！', 4000401);
     }
     // 校验密码是否一致
@@ -42,21 +42,32 @@ export class CommonService {
     if (!user) {
       throw new HttpException('用户名错误！', 4000401);
     }
-    // 校验密码是否一致
+    // bcryptjs.compareSync校验密码是否一致，true为验证通过
     if (!bcryptjs.compareSync(password, user.password)) {
       throw new HttpException('密码错误！', 4000401);
     }
     const accessToken = await this.authService.generateToken(user);
-    // 将用户信息和token存入redis，并设置失效时间（秒），语法：[key, seconds, value]
+    // 将用户信息和token存入redis
     const redis = await RedisInstance.initRedis();
-    redis.setex('auth:' + user.user_name, 300, accessToken);
+    const key = `${user.id}-${user.user_name}`;
+    redis.set(key, accessToken);
     return {
       user,
       token: accessToken,
     };
   }
 
-  async exitLogin() {
-    return `This action returns all common`;
+  async exitLogin(headers) {
+    const authorization = headers.authorization;
+    const payload = await this.authService.decodeToken(authorization);
+    const redis = await RedisInstance.initRedis();
+    const key = `${payload.id}-${payload.username}`;
+    const redis_token = await redis.get(key);
+    if (redis_token) {
+      redis.del(key);
+    } else {
+      throw new HttpException('您未登录，无需退出登录！', 4000401);
+    }
+    return '退出登录成功';
   }
 }

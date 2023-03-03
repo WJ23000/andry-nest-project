@@ -15,8 +15,7 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserDto, PaginationDto } from './dto/user.dto';
-import { ValidationPipe } from '../pipe/validation/validation.pipe';
-// import { AuthGuard } from '@nestjs/passport';
+import { ValidationPipe } from '../core/pipe/validation/validation.pipe';
 import { RbacInterceptor } from '../core/interceptor/rbac/rbac.interceptor';
 
 @ApiTags('用户管理')
@@ -27,7 +26,6 @@ export class UserController {
 
   @ApiOperation({ summary: '分页查询用户列表' })
   @ApiBearerAuth() // swagger请求header会携带Authorization参数
-  // @UseGuards(AuthGuard('jwt')) // 调用jwt验证token
   @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Get('list')

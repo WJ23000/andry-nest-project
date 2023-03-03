@@ -102,6 +102,13 @@ $ http://120.48.9.134:5210/docs
 $ root wj_123456
 ```
 
+## 注意事项
+
+```bash
+# module模块调用
+$ 禁止多个模块互相循环调用
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).

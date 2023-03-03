@@ -1,8 +1,9 @@
 import { Injectable, HttpException, Logger } from '@nestjs/common';
-import { UserDto, PaginationDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcryptjs from 'bcryptjs';
 import { User } from '../entity/user.entity';
+import { UserDto, PaginationDto } from './dto/user.dto';
 
 export interface UserRo {
   list: User[];
@@ -54,5 +55,17 @@ export class UserService {
 
   async batchDelete(ids: string[]) {
     return await this.userRepository.delete(ids);
+  }
+
+  // 查询用户
+  async queryUser(user_name, password) {
+    const user = await this.userRepository.findOne({
+      where: { user_name },
+    });
+    // bcryptjs.compareSync校验密码是否一致，true为验证通过
+    if (user && bcryptjs.compareSync(password, user.password)) {
+      return user;
+    }
+    return null;
   }
 }

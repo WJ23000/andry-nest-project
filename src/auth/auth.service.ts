@@ -1,10 +1,19 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
 import { jwtSecretKey } from './config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
+
+  // 校验用户
+  async validateUser(username, password): Promise<any> {
+    return await this.userService.queryUser(username, password);
+  }
 
   // 生成token，并返回token
   async generateToken(user: any) {
@@ -21,10 +30,12 @@ export class AuthService {
     return token;
   }
 
-  // 解密token，并返回用户信息（token格式：'Bearer xxxxxxxxxxxxxx'）
-  async verifyToken(token: string) {
-    console.log(token);
-    const data = await this.jwtService.verify(
+  // 校验token是否过期
+  async verifyToken(token: string) {}
+
+  // 解密token
+  async decodeToken(token: string) {
+    const data = await this.jwtService.verifyAsync(
       token.split(' ')[1],
       jwtSecretKey,
     );

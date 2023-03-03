@@ -6,12 +6,13 @@ import {
   UsePipes,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Headers,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CommonService } from './common.service';
 import { RegisterDto, LoginDto } from './dto/common.dto';
-import { ValidationPipe } from '../pipe/validation/validation.pipe';
-import { isPublicAuth } from '../guard/auth.guard';
+import { ValidationPipe } from '../core/pipe/validation/validation.pipe';
+import { isPublicAuth } from '../core/guard/auth.guard';
 
 @ApiTags('公共')
 @UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
@@ -36,8 +37,9 @@ export class CommonController {
   }
 
   @ApiOperation({ summary: '退出登录' })
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
   @Post('exitLogin')
-  exitLogin() {
-    return this.commonService.exitLogin();
+  exitLogin(@Headers() headers: any) {
+    return this.commonService.exitLogin(headers);
   }
 }
