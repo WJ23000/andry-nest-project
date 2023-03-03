@@ -14,7 +14,7 @@ async function bootstrap() {
   // 开启cors跨源资源共享
   app.enableCors();
   // 开启csrf跨站点请求伪造保护
-  app.use(csurf());
+  // app.use(csurf());
   // 限速（阻止同一个ip短时间大量的发起同一个请求）
   app.use(
     rateLimit({

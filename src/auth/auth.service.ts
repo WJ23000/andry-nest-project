@@ -31,11 +31,18 @@ export class AuthService {
   }
 
   // 校验token是否过期
-  async verifyToken(token: string) {}
+  async verifyToken(token: string) {
+    // try {
+    //   const data = await this.jwtService.verify(token);
+    //   console.log(data, '== data');
+    // } catch (error) {
+    //   throw new HttpException(error, 4000401);
+    // }
+  }
 
   // 解密token
   async decodeToken(token: string) {
-    const data = await this.jwtService.verifyAsync(
+    const data = await this.jwtService.verify(
       token.split(' ')[1],
       jwtSecretKey,
     );
