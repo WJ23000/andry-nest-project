@@ -31,7 +31,7 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     const data = await this.userRepository.findOne({ where: { id } });
     if (!data) {
-      throw new HttpException(`该数据不存在！`, 4000401);
+      throw new HttpException(`该数据不存在！`, 401);
     }
     return data;
   }
@@ -39,7 +39,7 @@ export class UserService {
   async update(id: string, userDto: UserDto) {
     const data = await this.userRepository.findOne({ where: { id } });
     if (!data) {
-      throw new HttpException(`该数据不存在！`, 4000401);
+      throw new HttpException(`该数据不存在！`, 401);
     }
     const updateUser = this.userRepository.merge(data, userDto);
     return this.userRepository.save(updateUser);
@@ -48,7 +48,7 @@ export class UserService {
   async remove(id: string) {
     const data = await this.userRepository.findOne({ where: { id } });
     if (!data) {
-      throw new HttpException('该数据不存在！', 4000401);
+      throw new HttpException('该数据不存在！', 401);
     }
     return await this.userRepository.remove(data);
   }

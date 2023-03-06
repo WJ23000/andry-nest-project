@@ -21,11 +21,11 @@ export class CommonService {
       where: { user_name },
     });
     if (user) {
-      throw new HttpException('用户名已存在！', 4000401);
+      throw new HttpException('用户名已存在！', 401);
     }
     // 校验密码是否一致
     if (password !== repassword) {
-      throw new HttpException('密码和重复密码不一致，请检查！', 4000401);
+      throw new HttpException('密码和重复密码不一致，请检查！', 401);
     }
     // 解决实体类BeforeInsert、BeforeUpdate方法不触发问题，解决@Exclude()不生效问题
     const entity = await this.userRepository.create(registerDto);
@@ -40,11 +40,11 @@ export class CommonService {
       .where('user.user_name=:user_name', { user_name })
       .getOne();
     if (!user) {
-      throw new HttpException('用户名错误！', 4000401);
+      throw new HttpException('用户名错误！', 401);
     }
     // bcryptjs.compareSync校验密码是否一致，true为验证通过
     if (!bcryptjs.compareSync(password, user.password)) {
-      throw new HttpException('密码错误！', 4000401);
+      throw new HttpException('密码错误！', 401);
     }
     const accessToken = await this.authService.generateToken(user);
     // 将用户信息和token存入redis
@@ -66,7 +66,7 @@ export class CommonService {
     if (redis_token) {
       redis.del(key);
     } else {
-      throw new HttpException('您未登录，无需退出登录！', 4000401);
+      throw new HttpException('您未登录，无需退出登录！', 401);
     }
     return '退出登录成功';
   }

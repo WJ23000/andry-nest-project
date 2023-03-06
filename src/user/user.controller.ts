@@ -10,7 +10,6 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';

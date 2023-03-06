@@ -29,7 +29,7 @@ export class AuthService {
     };
     const token = await this.jwtService.sign(payload);
     if (!token) {
-      throw new HttpException(`token生成失败，请检查！`, 4000401);
+      throw new HttpException(`token生成失败，请检查！`, 401);
     }
     return token;
   }
