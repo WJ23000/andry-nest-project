@@ -30,17 +30,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const authorization = request['headers'].authorization || '';
     let tokenNotTimeOut = true;
     if (authorization) {
-      // 校验token是否过期
-      await this.authService.verifyToken(authorization);
-      const payload = await this.authService.decodeToken(authorization);
+      // 校验token是否有效，是否过期
+      const payload = await this.authService.verifyToken(authorization);
       const redis = await RedisInstance.initRedis();
       const key = `${payload.id}-${payload.username}`;
       const redis_token = await redis.get(key);
-      // 校验token是否过期，过期删除redis中存储的用户token
-
-      // 用户未登录或者redis中存储的用户token与请求的header中的token不一致
-      console.log(redis_token);
-      console.log(authorization.split(' ')[1]);
       // 抛出未授权异常
       if (!redis_token) {
         throw new UnauthorizedException('用户未登录，请重新登录！');
@@ -52,10 +46,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return tokenNotTimeOut && (super.canActivate(context) as boolean);
   }
 
+  // 校验请求header是否携带Authorization参数
   handleRequest(err, user, info) {
-    console.log('触发');
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException('需要登录权限访问');
     }
     return user;
   }

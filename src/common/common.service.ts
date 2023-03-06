@@ -59,7 +59,7 @@ export class CommonService {
 
   async exitLogin(headers) {
     const authorization = headers.authorization;
-    const payload = await this.authService.decodeToken(authorization);
+    const payload = await this.authService.verifyToken(authorization);
     const redis = await RedisInstance.initRedis();
     const key = `${payload.id}-${payload.username}`;
     const redis_token = await redis.get(key);

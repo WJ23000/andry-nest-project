@@ -1,4 +1,8 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { jwtSecretKey } from './config';
@@ -30,25 +34,27 @@ export class AuthService {
     return token;
   }
 
-  // 校验token是否过期
+  // 校验token（token由header密文，payload密文，签名三部分组成，缺少任何一段都为格式不完整）
+  // verify方法没有回调函数，所以采用try...catch...finally
   async verifyToken(token: string) {
-    // try {
-    //   const data = await this.jwtService.verify(token);
-    //   console.log(data, '== data');
-    // } catch (error) {
-    //   throw new HttpException(error, 4000401);
-    // }
-  }
-
-  // 解密token
-  async decodeToken(token: string) {
-    const data = await this.jwtService.verify(
-      token.split(' ')[1],
-      jwtSecretKey,
-    );
-    if (!data) {
-      throw new HttpException(`token解密失败，请检查！`, 4000401);
+    try {
+      const data = await this.jwtService.verify(
+        token.split(' ')[1],
+        jwtSecretKey,
+      );
+      return data;
+    } catch (error) {
+      const errorMessage = error.toString();
+      switch (errorMessage) {
+        case 'TokenExpiredError: jwt expired':
+          throw new UnauthorizedException('token已过期！');
+        case 'JsonWebTokenError: jwt malformed':
+          throw new UnauthorizedException('token格式有误！');
+        case 'JsonWebTokenError: invalid signature':
+          throw new UnauthorizedException('token无效！');
+        default:
+          break;
+      }
     }
-    return data;
   }
 }

@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../core/guard/auth.guard';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtSecretKey.secret,
-      signOptions: { expiresIn: '30s' }, // token 过期时效，这里设置为4h(不加单位默认为ms)
+      signOptions: { expiresIn: '120s' }, // token 过期时效，这里设置为4h(不加单位默认为ms)
     }),
     UserModule,
   ],

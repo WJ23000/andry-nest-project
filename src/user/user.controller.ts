@@ -42,6 +42,8 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '更新用户信息' })
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
+  @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Patch(':id')
   update(@Param('id') id: string, @Body() userDto: UserDto) {
@@ -49,12 +51,16 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '删除用户' })
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
+  @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
 
   @ApiOperation({ summary: '批量删除用户' })
+  @ApiBearerAuth() // swagger请求header会携带Authorization参数
+  @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @Post('batchDelete')
   batchDelete(@Body() ids: string[]) {
     return this.userService.batchDelete(ids);
