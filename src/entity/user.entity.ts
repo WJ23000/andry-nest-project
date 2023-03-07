@@ -7,11 +7,12 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcryptjs from 'bcryptjs';
+import { Base } from './base.entity';
 
 @Entity({
   name: 'User',
 })
-export class User extends BaseEntity {
+export class User extends Base {
   @PrimaryGeneratedColumn()
   id: string; // 标记为主列，值自动生成
 
@@ -110,22 +111,6 @@ export class User extends BaseEntity {
     comment: '城市',
   })
   city: string;
-
-  @Column({
-    type: 'timestamp',
-    nullable: true,
-    name: 'create_time',
-    comment: '创建时间',
-  })
-  create_time: Date;
-
-  @Column({
-    type: 'timestamp',
-    nullable: true,
-    name: 'update_time',
-    comment: '更新时间',
-  })
-  update_time: Date;
 
   // 提前对密码进行加密
   @BeforeInsert()

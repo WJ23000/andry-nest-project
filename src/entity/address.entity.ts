@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Base } from './base.entity';
 
 @Entity({
   name: 'Address',
 })
-export class Address extends BaseEntity {
+export class Address extends Base {
   @PrimaryGeneratedColumn()
   id: string; // 标记为主列，值自动生成
 
@@ -64,20 +65,4 @@ export class Address extends BaseEntity {
     comment: '地址类型',
   })
   type: string;
-
-  @Column({
-    type: 'timestamp',
-    nullable: true,
-    name: 'create_time',
-    comment: '创建时间',
-  })
-  create_time: Date;
-
-  @Column({
-    type: 'timestamp',
-    nullable: true,
-    name: 'update_time',
-    comment: '更新时间',
-  })
-  update_time: Date;
 }
