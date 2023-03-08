@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Base } from './base.entity';
+import { Base } from '../global/base.entity';
 
 @Entity({
   name: 'Address',

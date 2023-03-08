@@ -9,6 +9,7 @@ export class Base extends BaseEntity {
     nullable: true,
     name: 'create_time',
     comment: '创建时间',
+    default: () => 'NOW()',
   })
   create_time: Date;
 
@@ -17,6 +18,7 @@ export class Base extends BaseEntity {
     nullable: true,
     name: 'update_time',
     comment: '更新时间',
+    default: () => 'NOW()',
   })
   update_time: Date;
 }

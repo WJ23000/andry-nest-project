@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../entity/user.entity';
-import { UserDto, PaginationDto } from './dto/user.dto';
+import { UpdateUserDto, PaginationDto } from './dto/user.dto';
 
 export interface UserRo {
   list: User[];
@@ -36,12 +36,12 @@ export class UserService {
     return data;
   }
 
-  async update(id: string, userDto: UserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const data = await this.userRepository.findOne({ where: { id } });
     if (!data) {
       throw new HttpException(`该数据不存在！`, 401);
     }
-    const updateUser = this.userRepository.merge(data, userDto);
+    const updateUser = this.userRepository.merge(data, updateUserDto);
     return this.userRepository.save(updateUser);
   }
 

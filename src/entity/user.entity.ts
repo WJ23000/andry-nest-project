@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcryptjs from 'bcryptjs';
-import { Base } from './base.entity';
+import { Base } from '../global/base.entity';
 
 @Entity({
   name: 'User',
