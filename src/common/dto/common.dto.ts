@@ -1,5 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  IntersectionType,
+} from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { CreateDateTime } from '../../global/page.dto';
 
 export class LoginDto {
   @ApiProperty({
@@ -19,7 +24,7 @@ export class LoginDto {
   readonly password: string;
 }
 
-export class RegisterDto extends LoginDto {
+export class RegisterDto extends IntersectionType(LoginDto, CreateDateTime) {
   @ApiProperty({
     title: '重复密码',
     description: '重复密码',

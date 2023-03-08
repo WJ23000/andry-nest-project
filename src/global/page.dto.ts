@@ -19,18 +19,16 @@ export class Pagination {
   readonly size: number;
 }
 
-export class DateTime {
+export class CreateDateTime {
   @ApiPropertyOptional({
     title: '创建时间',
     description: '创建时间',
-    default: '',
   })
-  readonly create_time: string;
+  readonly create_time: Date;
 
   @ApiPropertyOptional({
     title: '更新时间',
     description: '更新时间',
-    default: '',
   })
-  readonly update_time: string;
+  readonly update_time: Date;
 }

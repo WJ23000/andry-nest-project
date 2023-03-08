@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Request,
   UsePipes,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -32,8 +33,8 @@ export class AddressController {
   @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Post('create')
-  create(@Body() createAddressDto: CreateAddressDto) {
-    return this.addressService.create(createAddressDto);
+  create(@Body() createAddressDto: CreateAddressDto, @Request() req: any) {
+    return this.addressService.create(createAddressDto, req);
   }
 
   @ApiOperation({ summary: '分页查询用户收货地址列表' })
@@ -41,8 +42,8 @@ export class AddressController {
   @UseInterceptors(new RbacInterceptor(1)) // 调用rbac拦截器验证角色权限
   @UsePipes(new ValidationPipe()) // 调用管道验证参数
   @Get('list')
-  queryAddressList(@Query() query: PaginationDto) {
-    return this.addressService.queryAddressList();
+  queryAddressList(@Query() query: PaginationDto, @Request() req: any) {
+    return this.addressService.queryAddressList(query, req);
   }
 
   @ApiOperation({ summary: '根据id查询收货地址信息' })

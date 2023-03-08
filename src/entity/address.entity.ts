@@ -43,10 +43,10 @@ export class Address extends Base {
   @Column({
     type: 'varchar',
     length: 255,
-    name: 'city',
-    comment: '城市',
+    name: 'address',
+    comment: '地址',
   })
-  city: string;
+  address: string;
 
   @Column({
     type: 'varchar',
