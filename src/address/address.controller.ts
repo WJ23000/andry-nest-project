@@ -22,7 +22,7 @@ import {
 import { ValidationPipe } from '../core/pipe/validation/validation.pipe';
 import { RbacInterceptor } from '../core/interceptor/rbac/rbac.interceptor';
 
-@ApiTags('收货地址')
+@ApiTags('收货地址（验证一对多关系）')
 @Controller('address')
 @UseInterceptors(ClassSerializerInterceptor) // 搭配实体类@Exclude()方法，排除的属性查询时不显示
 export class AddressController {
